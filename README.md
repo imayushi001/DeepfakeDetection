@@ -1,50 +1,135 @@
-Deepfake Detection (Gradio App)
-A simple Gradio application for detecting deepfakes in face images, providing class probabilities (real vs fake), Grad-CAM explainability overlays, and basic evaluation plots (confusion matrix and ROC curve) generated from bundled examples.
+Deepfake Detection (Gradio App) 🎭
 
-Features
-Face detection using MTCNN from facenet-pytorch.
-Classifier based on InceptionResnetV1 fine-tuned for binary output.
-Explainability via Grad-CAM heatmaps over the detected face.
-Evaluation artifacts: confusion matrix and ROC curve built from sample images.
-Interactive UI using Gradio.
-Repository structure
-app.py: Gradio app and inference/evaluation logic
-requirements.txt: Python dependencies
-resnetinceptionv1_epoch_32.pth: trained model checkpoint
-examples/: sample images (some real and fake frames)
-confusion_matrix.png, roc_curve.png: generated on startup/evaluation
-Requirements
-Python 3.8+
-A working PyTorch installation (CPU works; CUDA is used if available)
-# Deepfake Detection
+
+A simple Gradio application for detecting deepfakes in face images.
+The app provides:
+✅ Class probabilities (real vs fake)
+✅ Grad-CAM heatmaps for explainability
+✅ Evaluation plots (Confusion Matrix & ROC Curve)
+
+✨ Features
+
+🔍 Face Detection using MTCNN
+
+🧠 Binary Classifier (InceptionResnetV1, fine-tuned for deepfake detection)
+
+🎨 Explainability via Grad-CAM overlays
+
+📊 Evaluation Artifacts: confusion matrix + ROC curve
+
+🌐 Interactive Web UI powered by Gradio
+
+📂 Repository Structure
+DeepfakeDetection/
+├── app.py                       # Main Gradio app (inference + evaluation logic)
+├── requirements.txt             # Python dependencies
+├── resnetinceptionv1_epoch_32.pth  # Trained model checkpoint
+├── examples/                    # Sample images (real & fake)
+├── confusion_matrix.png         # Evaluation confusion matrix
+├── roc_curve.png                # Evaluation ROC curve
+
+⚙️ Installation
+
+Clone the repository:
+
+git clone https://github.com/<your-username>/DeepfakeDetection.git
+cd DeepfakeDetection
+
+
+Install dependencies:
 
 pip install -r requirements.txt
-Note: If you need GPU support, install the CUDA-enabled version of PyTorch per the official instructions before running the app.
 
 
-Usage
-Render a Grad-CAM overlay highlighting influential regions
-Display the confusion matrix and ROC curve images generated from sample data
-Notes about examples and startup
-On startup, the app evaluates the model on a small set of bundled images in examples/ and saves confusion_matrix.png and roc_curve.png.
-The current code expects an examples.zip at the repo root and attempts to unzip it. If you already have an examples/ folder (as in this repo), you can:
-Provide examples.zip yourself, or
-Comment out or remove the unzip block in app.py:
+👉 For GPU support, install the CUDA-enabled version of PyTorch per official instructions
+.
+
+🚀 Running the App
+
+Run the following command:
+
+python app.py
+
+
+This will launch a Gradio interface and print a local URL (and optionally a public share link).
+Open it in your browser to interact with the app.
+
+🖼️ Usage
+
+Open the Gradio URL shown in the terminal.
+
+Upload a face image (or select from bundled examples).
+
+The app will:
+
+Detect the largest face (via MTCNN)
+
+Classify the face → Real or Fake (with probabilities)
+
+Render a Grad-CAM heatmap
+
+Display confusion matrix & ROC curve
+
+📊 Notes on Examples
+
+On startup, the app evaluates the model on the bundled dataset (examples/) and generates:
+
+confusion_matrix.png
+
+roc_curve.png
+
+The code expects an examples.zip file. If you already have an examples/ folder:
+
+Provide examples.zip, or
+
+Comment/remove the unzip block in app.py:
+
 # with zipfile.ZipFile("examples.zip", "r") as zip_ref:
 #     zip_ref.extractall(".")
-Model details and thresholds
-Backbone: InceptionResnetV1 (facenet-pytorch, pretrained on vggface2), adapted for binary classification with a single logit.
-Output is passed through a sigmoid; the app currently uses a decision threshold of 0.7, mapping to:
-score > 0.7 → real
-score ≤ 0.7 → fake You can adjust this threshold in app.py to tune precision/recall.
-Known limitations
-The example-driven evaluation (confusion matrix and ROC) is based on a tiny, bundled set and is not representative of real-world performance.
-Face detection failures (no detectable face) will raise an error for that input.
-The model file resnetinceptionv1_epoch_32.pth must be present at the repo root.
-Troubleshooting
-"No face detected": Ensure the uploaded image contains a clear, frontal face; try higher-resolution images.
-CUDA-related errors: Ensure your PyTorch installation matches your CUDA toolkit, or run on CPU by uninstalling CUDA-enabled PyTorch.
-Missing examples on startup: Either add examples.zip or comment out the unzip step as noted above.
-Port conflicts: If Gradio fails to launch, specify a port, e.g. gradio.Interface(...).launch(server_port=7861).
-grad-cam for visualization utilities
-Gradio for the web UI
+
+🧠 Model Details
+
+Backbone: InceptionResnetV1 (facenet-pytorch, pretrained on VGGFace2)
+
+Modified for binary classification with a single logit
+
+Output passed through sigmoid
+
+Decision threshold: 0.7
+
+score > 0.7 → Real
+
+score ≤ 0.7 → Fake
+
+👉 Threshold can be tuned in app.py for precision/recall trade-offs.
+
+⚠️ Known Limitations
+
+Bundled dataset is tiny → not representative of real-world accuracy
+
+Face detection failures → app raises error
+
+Model file resnetinceptionv1_epoch_32.pth must exist at repo root
+
+🛠️ Troubleshooting
+
+❌ "No face detected" → use clear, frontal, high-resolution images
+
+❌ CUDA errors → check PyTorch + CUDA compatibility, or run on CPU
+
+❌ Examples missing → add examples.zip or skip unzip logic
+
+❌ Port conflict → launch on a custom port:
+
+interface.launch(server_port=7861)
+
+🙏 Acknowledgments
+
+facenet-pytorch
+ – MTCNN & InceptionResnetV1
+
+grad-cam
+ – Visualization utilities
+
+Gradio
+ – Interactive web UI
